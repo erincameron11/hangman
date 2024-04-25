@@ -7,16 +7,16 @@ import java.util.ArrayList;
 
 public class HangmanBoard {
 	// Define variables
-	public static String hangman = "";
-	public static String prompt = "";
-	public static int score = 0;
-	public static String word = "";
-	public static ArrayList<String> words = new ArrayList<String>();
+	public static String hangman = ""; // The display output for the hangman
+	public static String prompt = ""; // The prompt to display to the user each turn
+	public static int score = 0; // The score of the game -- 7 is a loss
+	public static String word = ""; // The word for the user to guess
+	public static ArrayList<String> words = new ArrayList<String>(); // The array to hold the words
 	
 	
 	// ENUM: for each turn
 	public enum Score {
-		START, ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, END
+		START, ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN
 	}
 	
 	
@@ -26,26 +26,32 @@ public class HangmanBoard {
 		setHangman(Score.START);
 		
 		// Retrieve a random word from the text file
-		BufferedReader reader;
+		BufferedReader buffReader;
 		try {
 			// Open the file
-			reader = new BufferedReader(new FileReader("words.txt"));
+			buffReader = new BufferedReader(new FileReader("words.txt"));
 			
 			// Read the first line
-			String line = reader.readLine();
+			String line = buffReader.readLine();
 
 			while (line != null) {
 				// Save the word to the array
 				words.add(line);
 				
 				// Read the next line from the file
-				line = reader.readLine();
+				line = buffReader.readLine();
 			}
-			// Close the reader
-			reader.close();
+			// Close the buffered reader
+			buffReader.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		// Pick a random number between 0-length of the arraylist
+		int randomWord = (int) Math.floor(Math.random() * (words.size() - 0));
+		
+		// Set the word to the random index
+		word = words.get(randomWord);
 		
 	}
 	
@@ -77,9 +83,7 @@ public class HangmanBoard {
 			break;
 		case SEVEN:
 			hangman = " __________\n|          |\n|          O\n|          |\n|        -----\n|          |\n|         / \\\n|____________________";
-			break;
-		case END:
-			// Do something
+			prompt = "GAME OVER!\nThat's strike 7. Better luck next time";
 			break;
 		default:
 			break;
@@ -87,9 +91,51 @@ public class HangmanBoard {
 	}
 	
 	
+	// METHOD: method that sets the word spaces dynamically
+	public static void setWordSpaces(char guess) {
+		// Define variables
+//		int spaces = word.length();
+		
+		// Put each char of the word into an array
+		char[] ch = word.toCharArray();
+		int index = 0;
+		ArrayList<Character> charArray = new ArrayList<Character>();
+		for(int i = 0; i < word.length(); i++) {
+			charArray.add(ch[i]);
+		}
+		
+		if(charArray.contains(guess)) {
+//			charArray.remove();
+		}
+		System.out.println(charArray);
+		
+		
+//		for(int i = 0; i < charArray.size(); i++) {
+//			if(charArray.contains(guess)) {
+//				System.out.print("it's in here");
+//			} else {
+//				System.out.print("it's NOT in here");
+//			}
+//		}
+		
+		
+		
+		
+		
+//		// Create a new array to tell if we have the letter yet
+//		boolean[] guesses = new boolean[spaces];
+//		// Set them all to false
+//		for(int i = 0; i < guesses.length; i++) {
+//			guesses[i] = false;
+//		}
+		
+	}
+	
+	
 	// METHOD: method that displays the word prompt
 	public static void displayWord() {
-		System.out.println("\n\n_ _ _ _ _\n\n");
+		int spaces = word.length();
+		
 	}
 	
 
@@ -98,8 +144,13 @@ public class HangmanBoard {
 //		System.out.println(hangman);
 //		displayWord();
 //		System.out.print(prompt);
-		initialize();
-		System.out.print(words);
+		
+//		initialize();
+		
+		word = "HAPPY";
+		System.out.println(word);
+		char guess = 'A';
+		setWordSpaces(guess);
 	}
 
 }
