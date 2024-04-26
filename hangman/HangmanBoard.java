@@ -10,19 +10,21 @@ public class HangmanBoard {
 	// Define variables
 	public static String hangman = ""; // The display output for the hangman
 	public static String prompt = ""; // The prompt to display to the user each turn
-	public static int score = 0; // The score of the game -- 7 is a loss
+	public static int strikes = 0; // The score of the game -- 7 is a loss
 	public static String word = ""; // The word for the user to guess
 	public static ArrayList<String> words = new ArrayList<String>(); // The array to hold the words
 	public static char[] wordChars; // The array to update the word spaces
 	public static char[] answer; // The answer key in char array format
+	public static ArrayList<Character> lettersGuessed = new ArrayList<Character>(); // The letters guessed by user in char array format
+	public static boolean win = false; // The flag to signify when a user has won
 	
-	// ENUM: for each turn
-	public enum Score {
-		START, ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN
-	}
+//	// ENUM: for each turn
+//	public enum Score {
+//		START, ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN
+//	}
 	
 	
-	// METHOD: method to initialize the word
+	// METHOD: method to initialize the application
 	public static void initialize() {
 		// Initialize the hangman to the Start formation
 		setHangman(0);
@@ -63,16 +65,14 @@ public class HangmanBoard {
 	}
 	
 	
-	// METHOD: method that displays a hangman based on the current player score
-	public static void setHangman(int score) {
-		switch(score) {
+	// METHOD: method that displays a hangman based on the current player strikes
+	public static void setHangman(int strikes) {
+		switch(strikes) {
 		case 0:
 			hangman = " __________\n|          |\n|\n|\n|\n|\n|\n|____________________";
-			prompt = "\n\n======================================\nGood work! Guess another letter: ";
 			break;
 		case 1:
 			hangman = " __________\n|          |\n|          O\n|\n|\n|\n|\n|____________________";
-			prompt = "\n\nOuch! Strike 1\nGuess another letter: ";
 			break;
 		case 2:
 			hangman = " __________\n|          |\n|          O\n|          |\n|\n|\n|\n|____________________";
@@ -91,13 +91,12 @@ public class HangmanBoard {
 			break;
 		case 7:
 			hangman = " __________\n|          |\n|          O\n|          |\n|        -----\n|          |\n|         / \\\n|____________________";
-			prompt = "\nGAME OVER!\nThat's strike 7. Better luck next time";
 			break;
 		default:
 			break;
 		}
 	}
-	
+
 	
 	// METHOD: method that sets the word spaces dynamically
 	public static void setWordSpaces(char guess) {	
@@ -114,18 +113,23 @@ public class HangmanBoard {
 			}
 		}
 		
-		// If we have a mismatched number of exclamations to score values
+		// If the user does not guess correctly
 		if(exclamations == 0) {
-			// Increase the score
-			score++;
+			// Increase the strikes
+			strikes++;
+		// If the user has guessed all letters
+		} else if(exclamations == word.length()) {
+			// They win!
+			win = true;
 		}
 		
-		// Call the hangman
-		setHangman(score);
+		// Update the prompt and call the hangman to draw the figure
+		prompt = "\n\nStrikes = " + strikes + "\nLetters Guessed: " + lettersGuessed + "\nGuess another letter: ";
+		setHangman(strikes);
 	}
 	
 	
-	// METHOD: method that displays the word prompt
+	// METHOD: method that displays the word prompt to the console dynamically
 	public static void displayWord() {
 		// Define variables
 		System.out.println();
@@ -142,40 +146,61 @@ public class HangmanBoard {
 	}
 	
 
+	// METHOD: Main method for running the application
 	public static void main(String[] args) {
 		// Create a Scanner
 		Scanner input = new Scanner(System.in);
 		
 		// Define variables
-		String strGuess;
 		char guess;
 		
 		// Initialize the game
 		initialize();
-//		System.out.println(word);
-		displayWord();
-		System.out.println("\n\n" + hangman);
-		System.out.println("\nWelcome to Hangman! You have Seven strikes before you're out.\n\nGuess a letter: ");
 		
+		// Print out a title
+		System.out.println("\nHANGMAN\n=================================\n" + hangman);
+		
+		// Display the word spaces for guessing
+		displayWord();
+		
+		// Display a prompt
+		prompt = "\n\nWelcome to Hangman! You have 7 strikes before you're out.\n\nGuess a letter: ";
+		System.out.println(prompt);
+		
+		// Loop until we have a winner, or a loser
 		while(true) {
-			strGuess = input.next().toUpperCase();
-			guess = strGuess.charAt(0);
-			setWordSpaces(guess);
-			
-			System.out.println("\n" + hangman);
-			displayWord();
-			System.out.println(prompt);
-			
-			if(score == 7) {
+			// If we have a winner
+			if(win) {
+				prompt = "WINNER!!!";
+				System.out.print(prompt);
 				break;
 			}
+			
+			// Get the guess from the user
+			guess = input.next().toUpperCase().charAt(0);
+			
+			// Add the guess to our guess list
+			lettersGuessed.add(guess);
+			
+			// Set the display of letters guessed
+			setWordSpaces(guess);
+			
+			// Print the hangman
+			System.out.println("\n\n\n" + hangman);
+			
+			// Display the letters guessed
+			displayWord();
+			
+			// If we have a loser
+			if(strikes == 7) {
+				prompt = "\n\nGAME OVER!\nStrikes = " + strikes + "\nLetters Guessed: " + lettersGuessed + "\nBetter luck next time.\n\nThe answer was: " + word;
+				System.out.print(prompt);
+				break;
+			}
+			
+			// Display the prompt
+			System.out.println(prompt);
 		}
-		
-//		word = "HAPPY";
-//		answer = word.toCharArray();
-//		System.out.println(word);
-//		char guess = 'Y';
-//		setWordSpaces(guess);
 		
 		// Close the input
 		input.close();
