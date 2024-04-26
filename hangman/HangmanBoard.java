@@ -17,11 +17,7 @@ public class HangmanBoard {
 	public static char[] answer; // The answer key in char array format
 	public static ArrayList<Character> lettersGuessed = new ArrayList<Character>(); // The letters guessed by user in char array format
 	public static boolean win = false; // The flag to signify when a user has won
-	
-//	// ENUM: for each turn
-//	public enum Score {
-//		START, ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN
-//	}
+	public static int exclamations = 0; // Track the number of exclamations
 	
 	
 	// METHOD: method to initialize the application
@@ -101,7 +97,7 @@ public class HangmanBoard {
 	// METHOD: method that sets the word spaces dynamically
 	public static void setWordSpaces(char guess) {	
 		// Define variables
-		int exclamations = 0;
+		int count = 0;
 		
 		// Loop through the new char array
 		for(int i = 0; i < wordChars.length; i++) {
@@ -109,16 +105,19 @@ public class HangmanBoard {
 			if(wordChars[i] == guess) {
 				// Replace the value with our signifier (exclamation mark)
 				wordChars[i] = '!';
+				count++;
 				exclamations++;
 			}
 		}
 		
 		// If the user does not guess correctly
-		if(exclamations == 0) {
+		if(count == 0) {
 			// Increase the strikes
 			strikes++;
+		}
+		
 		// If the user has guessed all letters
-		} else if(exclamations == word.length()) {
+		if(exclamations == word.length()) {
 			// They win!
 			win = true;
 		}
@@ -168,14 +167,7 @@ public class HangmanBoard {
 		System.out.println(prompt);
 		
 		// Loop until we have a winner, or a loser
-		while(true) {
-			// If we have a winner
-			if(win) {
-				prompt = "WINNER!!!";
-				System.out.print(prompt);
-				break;
-			}
-			
+		while(true) {			
 			// Get the guess from the user
 			guess = input.next().toUpperCase().charAt(0);
 			
@@ -191,6 +183,13 @@ public class HangmanBoard {
 			// Display the letters guessed
 			displayWord();
 			
+			// If we have a winner
+			if(win) {
+				prompt = "\n\nWINNER!\nStrikes = " + strikes + "\nLetters Guessed: " + lettersGuessed + "\n\n\nThe answer was: " + word;
+				System.out.print(prompt);
+				break;
+			}
+			
 			// If we have a loser
 			if(strikes == 7) {
 				prompt = "\n\nGAME OVER!\nStrikes = " + strikes + "\nLetters Guessed: " + lettersGuessed + "\nBetter luck next time.\n\nThe answer was: " + word;
@@ -205,5 +204,4 @@ public class HangmanBoard {
 		// Close the input
 		input.close();
 	}
-
 }
