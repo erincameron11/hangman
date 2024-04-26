@@ -10,14 +10,14 @@ public class HangmanBoard {
 	// Define variables
 	public static String hangman = ""; // The display output for the hangman
 	public static String prompt = ""; // The prompt to display to the user each turn
-	public static int strikes = 0; // The score of the game -- 7 is a loss
 	public static String word = ""; // The word for the user to guess
-	public static ArrayList<String> words = new ArrayList<String>(); // The array to hold the words
+	public static int strikes = 0; // The score of the game -- 7 is a loss
+	public static int exclamations = 0; // Track the number of exclamations
+	public static ArrayList<String> words = new ArrayList<String>(); // The array to hold the words form file
+	public static ArrayList<Character> lettersGuessed = new ArrayList<Character>(); // The letters guessed by user in char array format
 	public static char[] wordChars; // The array to update the word spaces
 	public static char[] answer; // The answer key in char array format
-	public static ArrayList<Character> lettersGuessed = new ArrayList<Character>(); // The letters guessed by user in char array format
 	public static boolean win = false; // The flag to signify when a user has won
-	public static int exclamations = 0; // Track the number of exclamations
 	
 	
 	// METHOD: method to initialize the application
@@ -47,7 +47,7 @@ public class HangmanBoard {
 			e.printStackTrace();
 		}
 		
-		// Pick a random number between 0-length of the arraylist
+		// Pick a random number between 0 -> length of the arraylist
 		int randomWord = (int) Math.floor(Math.random() * (words.size() - 0));
 		
 		// Set the word to the random index
@@ -155,6 +155,8 @@ public class HangmanBoard {
 		
 		// Initialize the game
 		initialize();
+		
+		System.out.print(word + "\n\n\n\n\n\n");
 		
 		// Print out a title
 		System.out.println("\nHANGMAN\n=================================\n" + hangman);
